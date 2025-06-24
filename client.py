@@ -56,7 +56,8 @@ quitButton.pack()
 
 
 
-host = 'localhost'
+#host = 'localhost'
+host = '192.168.0.2'
 port = 8080
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

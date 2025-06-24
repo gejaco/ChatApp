@@ -1,7 +1,8 @@
 import socket
 from threading import Thread
 
-host = 'localhost'
+#host = 'localhost'
+host = '192.168.0.2'
 port = 8080
 clients = {}
 addresses = {}
@@ -11,14 +12,15 @@ sock.bind((host, port))
 
 def broadcast(msg, prefix=""):
     for x in clients:
-        x.send(bytes(prefix, "utf8") + msg)
+        x.send(bytes(prefix+msg, "utf8"))
 
 def handle_clients(conn, address):
     name = conn.recv(1024).decode()
     welcome = "Welcome " + name + ". You can type #quit if you ever want to leave the Chat Room"
     conn.send(bytes(welcome, "utf8"))
     msg = name + " has recently joined the chat room"
-    broadcast(bytes(msg, "utf8"))
+    #broadcast(bytes(msg, "utf8"))
+    broadcast(msg)
     clients[conn] = name
 
     while True:
@@ -28,9 +30,10 @@ def handle_clients(conn, address):
             broadcast(msg, name +": ")
         else:
             conn.send(bytes("#quit", "utf8"))
+            broadcast(bytes(name + " has left the chat room.", "utf8"))            
             conn.close()
             del clients[conn]
-            broadcast(bytes(name + " has left the chat room.", "utf8"))
+
 
 def accept_client_connections():
     while True:
